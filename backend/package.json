@@ -1,0 +1,25 @@
+{
+  "name": "torre_server",
+  "version": "1.0.0",
+  "description": "backend auth and search engine",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dilas12345/torre-jobs.git"
+  },
+  "keywords": [
+    "jobs",
+    "search",
+    "auth",
+    "backend"
+  ],
+  "author": "Yusuph Dilas Che",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dilas12345/torre-jobs/issues"
+  },
+  "homepage": "https://github.com/dilas12345/torre-jobs#readme"
+}
