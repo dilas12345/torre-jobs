@@ -45,6 +45,9 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to Torre Job search engine"});
 });
 
+require('./src/routes/auth')(app);
+require('./src/routes/userRoutes')(app);
+
 //port request listening
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

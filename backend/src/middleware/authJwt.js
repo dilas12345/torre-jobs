@@ -80,12 +80,11 @@ verifyToken = (req, res, next) => {
             });
         });
     };
-
-    const authJwt = {
-        verifyToken: verifyToken,
-        isAdmin: isAdmin,
-        isHumanResource: isHumanResource,
-        isHumanResourceOrAdmin: isHumanResourceOrAdmin
-    };
-    module.exports = authJwt;
 }
+const authJwt = {
+    verifyToken: verifyToken,
+    isAdmin: isAdmin,
+    isHumanResource: isHumanResource,
+    isHumanResourceOrAdmin: isHumanResourceOrAdmin
+};
+module.exports = authJwt;
