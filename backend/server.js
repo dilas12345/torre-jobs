@@ -10,6 +10,30 @@ var corBasUrl = {
 
 app.use(cors(corBasUrl));
 
+const db = require("./src/models");
+const Role = db.role;
+
+db.sequelize.sync({force: true}).then(() => {
+    console.log("Reseting DB");
+    initial();
+})
+
+function initial() {
+    Role.create({
+        id: 1,
+        name: "user"
+    });
+
+    Role.create({
+        id: 2,
+        name: "human_resource"
+    });
+
+    Role.create({
+        id: 3,
+        name: 'admin'
+    })
+}
 //content-type request "application/json"
 app.use(bodyparser.json());
 
