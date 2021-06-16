@@ -22,65 +22,66 @@ verifyToken = (req, res, next) => {
         req.userId = decoded.id;
         next();
     })
+};
 
-    isAdmin = (req, res, next) => {
-        User.findByPk(req.userId).then(user => {
-            user.getRoles().then(roles => {
-                for (let i = 0; i < roles.length; i++) {
-                    if (roles[i].name === "admin") {
-                        next();
-                        return;
-                    }
+isAdmin = (req, res, next) => {
+    User.findByPk(req.userId).then(user => {
+        user.getRoles().then(roles => {
+            for (let i = 0; i < roles.length; i++) {
+                if (roles[i].name === "admin") {
+                    next();
+                    return;
                 }
+            }
 
-                res.status(403).send({
-                    message: "Admin Role Required"
-                });
+            res.status(403).send({
+                message: "Admin Role Required"
+            });
 
-                return;
+            return;
+        });
+    });
+};
+
+isHumanResource = (req, res, next) => {
+    User.findByPk(req.userId).then(user => {
+        user.getRoles().then(roles => {
+            for (let i = 0; i < roles.length; i++) {
+                if (roles[i].name === "human_resource") {
+                    next();
+                    return;
+                }
+            }
+
+            res.status(403).send({
+                message: "Humar Resource Required"
             });
         });
-    };
+    });
+};
 
-    isHumanResource = (req, res, next) => {
-        User.findByPk(req.userId).then(user => {
-            user.getRoles().then(roles => {
-                for (let i = 0; i < roles.length; i++) {
-                    if (roles[i].name === "human_resource") {
-                        next();
-                        return;
-                    }
+isHumanResourceOrAdmin = (req, res, next) => {
+    User.findByPk(req.userId).then(user => {
+        user.getRoles().then(roles => {
+            for (let i = 0; i < roles.length; i++) {
+                if (roles[i].name === "human_resources") {
+                    next();
+                    return;
                 }
 
-                res.status(403).send({
-                    message: "Humar Resource Required"
-                });
-            });
-        });
-    };
-
-    isHumanResourceOrAdmin = (req, res, next) => {
-        User.findByPk(req.userId).then(user => {
-            user.getRoles().then(roles => {
-                for (let i = 0; i < roles.length; i++) {
-                    if (roles[i].name === "human_resources") {
-                        next();
-                        return;
-                    }
-
-                    if (roles[i].name === "admin") {
-                        next();
-                        return;
-                    }
+                if (roles[i].name === "admin") {
+                    next();
+                    return;
                 }
+            }
 
-                res.status(403).send({
-                    message: "Admin or HR Role Required"
-                });
+            res.status(403).send({
+                message: "Admin or HR Role Required"
             });
         });
-    };
-}
+    });
+};
+
 const authJwt = {
     verifyToken: verifyToken,
     isAdmin: isAdmin,

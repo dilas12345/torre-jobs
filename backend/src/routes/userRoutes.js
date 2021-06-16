@@ -25,4 +25,11 @@ module.exports = function(app) {
             authJwt.verifyToken, authJwt.isAdmin
         ], controller.adminDashboard
     );
+
+    app.get(
+        "/api/v1/hr",
+        [
+            authJwt.verifyToken, authJwt.isHumanResource
+        ], controller.humanResourceDashboard
+    )
 };
