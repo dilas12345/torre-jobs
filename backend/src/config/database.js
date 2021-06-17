@@ -4,6 +4,7 @@ module.exports = {
     PASSWORD: "5bad89a3",
     DB: 'torre_db',
     dialect: "mysql",
+    port: 3306,
     pool: {
         max: 5,
         min: 0,
