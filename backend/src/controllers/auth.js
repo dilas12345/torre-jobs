@@ -5,9 +5,8 @@ const Role = db.role;
 
 const Op = db.Sequelize.Op;
 
-var jwt = require("../models");
+var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
-const user = require("../models/user");
 
 exports.register = (req, res) => {
     //Putting User to Database
@@ -51,7 +50,7 @@ exports.login = (req, res) => {
             return res.status(404).send({ message: "User not found"});
         }
 
-        var passwordIsValid = bcryot.compareSync(
+        var passwordIsValid = bcrypt.compareSync(
             req.body.password,
             user.password
         );
