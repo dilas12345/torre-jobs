@@ -25,7 +25,9 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.user = require("../models/user.js")(sequelize, Sequelize);
-db.role = require("../models/user.js")(sequelize, Sequelize);
+db.role = require("../models/role.js")(sequelize, Sequelize);
+
+console.log("Ping Role-->", db.role);
 
 db.role.belongsToMany(db.user, {
     through: "user_roles",
