@@ -13,10 +13,11 @@ app.use(cors(corBasUrl));
 const db = require("./src/models");
 const Role = db.role;
 
-db.sequelize.sync({force: false}).then(() => {
-    console.log("Reseting DB");
-    initial();
-})
+db.sequelize.sync();
+// db.sequelize.sync({force: false}).then(() => {
+//     console.log("Reseting DB");
+//     initial();
+// })
 
 function initial() {
     Role.create({
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
 
 require('./src/routes/auth')(app);
 require('./src/routes/userRoutes')(app);
+require('./src/routes/bio')(app);
 
 //port request listening
 const PORT = process.env.PORT || 8080;

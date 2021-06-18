@@ -1,4 +1,3 @@
-const { authJwt } = require("../middleware");
 const controller = require("../controllers/user");
 
 module.exports = function(app) {
@@ -14,22 +13,29 @@ module.exports = function(app) {
 
     app.get(
         "/api/v1/user",
-        [
-            authJwt.verifyToken
-        ], controller.userDashboard
-    );
-
-    app.get(
-        "/api/v1/admin",
-        [
-            authJwt.verifyToken, authJwt.isAdmin
-        ], controller.adminDashboard
+        // [authJwt.verifyToken], 
+        controller.userDashboard
     );
 
     app.get(
         "/api/v1/hr",
-        [
-            authJwt.verifyToken, authJwt.isHumanResource
-        ], controller.humanResourceDashboard
+        // [authJwt.verifyToken, authJwt.isHumanResource], 
+        controller.humanResourceDashboard
+    )
+
+    app.get(
+        "/api/v1/admin",
+        // [authJwt.verifyToken, authJwt.isAdmin], 
+        controller.adminDashboard
+    );
+
+    app.get(
+        "/api/v1/bios",
+        controller.biosEndpoint
+    );
+
+    app.get(
+        "/api/v1/opportunities",
+        controller.jobEndpoint
     )
 };
