@@ -13,7 +13,7 @@ app.use(cors(corBasUrl));
 const db = require("./src/models");
 const Role = db.role;
 
-db.sequelize.sync({force: true}).then(() => {
+db.sequelize.sync({force: false}).then(() => {
     console.log("Reseting DB");
     initial();
 })
