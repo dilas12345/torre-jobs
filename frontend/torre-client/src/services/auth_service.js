@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { response } from 'express';
 
 const BASE_URL = "http://localhost:8080/api/auth/";
 
@@ -36,4 +35,4 @@ class Authentication {
     }
 }
 
-export default new Authentication;
+export default new Authentication();
