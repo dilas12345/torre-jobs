@@ -16,11 +16,11 @@ class Authentication {
 
                  return response.data;
              });
-    }
+    };
 
     logout() {
         localStorage.removeItem("user");
-    }
+    };
 
     register(username, email, password) {
         return axios.post(BASE_URL + "register", {
@@ -28,11 +28,11 @@ class Authentication {
             email,
             password
         });
-    }
+    };
 
     getRecentUser() {
         return JSON.parse(localStorage.getItem("user"));
-    }
+    };
 }
 
 export default new Authentication();
