@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "http://localhost:8080/api/auth/";
+const BASE_URL = "https://torre-backend-test.herokuapp.com/api/auth/" //"http://localhost:8080/api/auth/";
 
 class Authentication {
     login(username, password) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import header from './header';
 
-const BASE_URL = "http://localhost:8080/api/v1/";
+const BASE_URL = "https://torre-backend-test.herokuapp.com/api/v1/" //"http://localhost:8080/api/v1/";
 
 class Job_server {
     getBiosDashboard() {
