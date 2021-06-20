@@ -1,84 +1,117 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
-import Service from "../services/auth_service";
-import BioService from "../services/job";
+
+import {connect} from "react-redux";
+import Jobs from "../services/job";
 
 class Profile extends Component{
     constructor(props){
         super(props)
 
         this.state = {
-            redirect: null,
-            userIsReady: false,
-            recentUser: { username: ""},
-
-            bios: [],
-            opportunities: []
+            jobs: [],
+            opportunities: [],
+            content: []
         };
     }
 
-    componentDidMount() {
-        const recentUser = Service.getRecentUser();
+    // componentDidMount() {
+    //     const recentUser = Service.getRecentUser();
 
-        if(!recentUser) this.setState({
-            redirect: "/home"
-        });
-        this.setState({ recentUser: recentUser, userIsReady: true })
-    }
+    //     if(!recentUser) this.setState({
+    //         redirect: "/home"
+    //     });
+    //     this.setState({ recentUser: recentUser, userIsReady: true })
+    // }
 
-    fetchData() {
-        const bios = BioService.getBiosDashboard();
-        const opportunities = BioService.getOppDashboard();
+    bios = (e) => {
+        e.preventDefault();
+        // alert(Jobs.getBiosDashboard());
+        Jobs.getBiosDashboard().then(
+            response => {
+                this.setState({
+                    content: response.data
+                });
+                alert(this.state.content.code)
+                console.log("Content-->", this.state.content);
+            },
+            error => {
+                this.setState({
+                    content: (
+                        error.response &&
+                        error.response.data && 
+                        error.response.data.message
+                    ) || error.message || error.toString()
+                });
+            }
+        );
+      }
 
-        this.setState({ bios: bios, opportunities: opportunities})
-
-    }
-
+      opportunities = (e) => {
+        e.preventDefault();
+        // alert(Jobs.getBiosDashboard());
+        Jobs.getBiosDashboard().then(
+            response => {
+                this.setState({
+                    content: response.data
+                });
+                alert(this.state.content.code)
+                console.log("Content-->", this.state.content);
+            },
+            error => {
+                this.setState({
+                    content: (
+                        error.response &&
+                        error.response.data && 
+                        error.response.data.message
+                    ) || error.message || error.toString()
+                });
+            }
+        );
+      }
     render(){
-        if(this.state.redirect) {
-            return <Redirect to = {this.state.redirect}/>
+        const {user: recentUser} = this.props;
+        console.log("ALl props==>", this.props)
+        const {bios, opportunities} = this.state;
+
+        if(!recentUser) {
+            return <Redirect to = {"/login"}/>
         }
 
-        const {recentUser, bios, opportunities} = this.state;
         return(
             <div className="container">
-                {(this.state.userIsReady) ? 
-                    <div >
-                        <header className="jumbotron">
-                            <h3>
-                                <strong>{recentUser.username}</strong>
-                            </h3>
-                        </header>
-
-                        <p>
-                            <strong>Id:</strong> { " " }
-                            {recentUser.id}
-                        </p>
-                        <p>
-                            <strong>Email:</strong> { " " }
-                            {recentUser.email}
-                        </p>
-                    </div> 
-                : null}
-
-                <div>
-                    <button>
-                        Get Jobs
-                    </button>
-
-                    <button>
-                        Get Opportunity
-                    </button>
-                </div>
-
                 <div >
+                    <header className="jumbotron">
+                        <h3>
+                            <strong>{recentUser.username}</strong> Profile
+                        </h3>
+                    </header>
+
                     <p>
                         <strong>Id:</strong> { " " }
-                        {bios}
+                        {recentUser.id}
                     </p>
                     <p>
-                        <strong>Id:</strong> { " " }
-                        {opportunities}
+                        <strong>Email:</strong> { " " }
+                        {recentUser.email}
+                    </p>
+                </div> 
+
+                <div >
+                    <button onClick={this.bios} className="btn btn-primary btn-block">
+                        Get Jobs
+                    </button>
+                    <p>
+                        <strong>Bios Data:</strong> { " " }
+                       {this.state.content.code}
+                    </p>
+
+                    <button className="btn btn-primary btn-block">
+                        Get Opportunity
+                    </button>
+                    <p>
+                        <strong>Opportunity Data:</strong> { " " }
+                        {/* {this.state.content} */}
                     </p>
                     </div> 
                 
@@ -87,4 +120,10 @@ class Profile extends Component{
     }
 }
 
-export default Profile;
+function mapStateToProps(state){
+    const {user} = state.auth;
+    return{
+        user,
+    }
+}
+export default connect(mapStateToProps)(Profile);

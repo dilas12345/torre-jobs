@@ -3,6 +3,10 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button"
 
+import { Redirect } from "react-router-dom";
+import {connect} from "react-redux";
+import {login} from "../actions/auth";
+
 import Service from "../services/auth_service";
 
 const required = (value) => {
@@ -26,7 +30,7 @@ class Login extends Component {
             username: "",
             password: "",
             loading: false,
-            message: ""
+            // message: ""
         }
     };
 
@@ -43,35 +47,28 @@ class Login extends Component {
     };
 
     onLogin(a) {
-        a.peventDefault();
+        a.preventDefault();
 
         this.setState({
-            message: "",
-            loading: true
+        //   message: "",
+          loading: true
         });
-
+    
         this.form.validateAll();
+    
+        const {dispatch, history} = this.props;
 
-        if(this.checkBtn.context._errors.length === 0) {
-            Service.login(this.state.username, this.state.password).then(
-                () => {
-                    this.props.history.push("/profile");
-                    window.location.reload();
-                },
-                error => {
-                    const respMessage = (
-                        error.response &&
-                        error.response.data &&
-                        error.response.data.message
-                    ) || error.message ||
-                    error.toString();
-
-                    this.setState({
-                        loading: false,
-                        message: respMessage
-                    });
-                }
-            );
+        if (this.checkBtn.context._errors.length === 0) {
+            dispatch(login(this.state.username, this.state.password))
+             .then(() => {
+                history.pushState("/profile");
+                window.location.reload();
+            })
+            .catch(() => {
+                this.setState({
+                    loading: false
+                })
+            })
         } else {
             this.setState({
                 loading: false
@@ -79,6 +76,11 @@ class Login extends Component {
         }
     }
     render(){
+        const{ loggedIn, message } = this.props;
+
+        if(loggedIn) {
+            return <Redirect to="/profile" />
+        }
         return(
             <div className="col-mid-12">
                 <div className="card card-container">
@@ -103,7 +105,7 @@ class Login extends Component {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="username">
+                            <label htmlFor="password">
                                 Password
                             </label>
                             <Input
@@ -118,7 +120,6 @@ class Login extends Component {
 
                         <div className="form-group">
                             <button 
-                                style={{alignContent: 'center'}}
                                 className="btn btn-primary btn-block"
                                 disabled={this.state.loading}
                             >
@@ -129,10 +130,10 @@ class Login extends Component {
                             </button>
                         </div>
 
-                        {this.state.message && (
+                        {message && (
                             <div className="form-group">
                                 <div className="alert alert-danger" role="alert">
-                                    {this.state.message}
+                                    {message}
                                 </div>
                             </div>
                         )}
@@ -150,4 +151,12 @@ class Login extends Component {
     }
 }
 
-export default Login
+function mapStateToProps(state) {
+    const {loggedIn} = state.auth;
+    const {message} = state.message;
+    return{
+        loggedIn,
+        message
+    };
+}
+export default connect(mapStateToProps)(Login)

@@ -1,4 +1,3 @@
-import { response } from "express";
 import React, {Component} from "react";
 import Service from "../services/user_service";
 
@@ -9,6 +8,8 @@ class getUserDashboard extends Component {
         this.state = {
             content: "",
         };
+
+        console.log("ALL Props-->", this.props)
     }
 
     componentDidMount(){
@@ -17,6 +18,8 @@ class getUserDashboard extends Component {
                 this.setState({
                     content: response.data
                 });
+
+                console.log("Content-->", this.state.content);
             },
             error => {
                 this.setState({
@@ -33,7 +36,7 @@ class getUserDashboard extends Component {
 
     render(){
         return(
-            <div className={container}>
+            <div className="container">
                 <header className="jumbotron">
                     <h3>
                         {this.state.content}
@@ -43,3 +46,5 @@ class getUserDashboard extends Component {
         )
     }
 }
+
+export default getUserDashboard;

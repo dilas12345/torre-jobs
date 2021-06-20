@@ -6,11 +6,14 @@ import {isEmail} from "validator";
 
 import Service from "../services/auth_service";
 
-const requirement = (value) => {
+import {connect} from "react-redux";
+import { register } from "../actions/auth";
+
+const required = (value) => {
     if(!value) {
         return (
             <div className="alert alert-danger" role="alert">
-                Fill In the requirementd Field
+                Fill In the required Field
             </div>
         );
     }
@@ -59,7 +62,6 @@ class Register extends Component {
             email: "",
             password: "",
             success: false,
-            message: ""
         }
     }
 
@@ -86,41 +88,32 @@ class Register extends Component {
         a.preventDefault();
 
         this.setState({
-            message: "",
+            // message: "",
             success: false
         });
 
         this.form.validateAll();
 
         if(this.checkBtn.context._errors.length === 0) {
-            Service.register(
-                this.state.username,
-                this.state.email,
-                this.state.password
-            ).then(
-                response => {
-                    this.setState({
-                        message: response.data.message,
-                        success: true
-                    })
-                },
-                error => {
-                    const respMessage = (
-                        error.response && 
-                        error.response.data &&
-                        error.response.data.message
-                    ) || error.message || error.toString();
-
-                    this.setState({
-                        success: false,
-                        message: respMessage
-                    });
-                }
-            );
+            this.props
+             .dispatch(
+                 register(this.state.username, this.state.email, this.state.password)
+             )
+             .then(() => {
+                 this.setState({
+                     success: true,
+                 });
+             })
+             .catch(() => {
+                this.setState({
+                    success: false,
+                });
+             });
         }
 
     }
     render(){
+        const { message } = this.props;
         return(
             <div className="col-md-12">
                 <div className="card card-container">
@@ -142,7 +135,7 @@ class Register extends Component {
                                         name="username"
                                         value={this.state.username}
                                         onChange={this.onChangeUsername}
-                                        validator={[requirement, verifyUsername]}
+                                        validator={[required, verifyUsername]}
                                     />
                                 </div>
 
@@ -156,7 +149,7 @@ class Register extends Component {
                                         name="password"
                                         value={this.state.password}
                                         onChange={this.onChangePassword}
-                                        validator={[requirement, verifyPassword]}
+                                        validator={[required, verifyPassword]}
                                     />
                                 </div>
 
@@ -170,7 +163,7 @@ class Register extends Component {
                                         name="email"
                                         value={this.state.email}
                                         onChange={this.onChangeEmail}
-                                        validator={[requirement, verifyEmail]}
+                                        validator={[required, verifyEmail]}
                                     />
                                 </div>  
 
@@ -211,4 +204,10 @@ class Register extends Component {
     }
 };
 
-export default Register;
+function mapStateToProps(state) {
+    const {message} = state.message;
+    return{
+        message,
+    }
+}
+export default connect(mapStateToProps)(Register);

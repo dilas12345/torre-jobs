@@ -5,11 +5,11 @@ const BASE_URL = "http://localhost:8080/api/v1/";
 
 class Job_server {
     getBiosDashboard() {
-        return axios.get(BASE_URL + "bios", {headers: header() });
+        return axios.get(BASE_URL + "bios");
     }
 
     getOppDashboard() {
-        return axios.get(BASE_URL + "opportunities", {headers: header() });
+        return axios.get(BASE_URL + "opportunities");
     }
 
 }

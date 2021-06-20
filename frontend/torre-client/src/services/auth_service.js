@@ -14,6 +14,7 @@ class Authentication {
                      localStorage.setItem("user", JSON.stringify(response.data));
                  }
 
+                 console.log("Response-->", response.data)
                  return response.data;
              });
     };
