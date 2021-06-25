@@ -1,88 +1,109 @@
 import {
-    REGISTER_SUCCESS,
-    REGISTER_FAIL,
-    LOGIN_SUCCESS,
-    LOGIN_FAIL,
-    LOGOUT,
-    _MESSAGE,
-  } from "./types";
-  
-  import Service from "../services/auth_service";
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGOUT,
+  SET_MESSAGE,
+} from "./types";
 
-//   import Jobs from "../services/job";
-  
-  export const register = (username, email, password) => (dispatch) => {
-    return Service.register(username, email, password).then(
-      (response) => {
-        dispatch({
-          type: REGISTER_SUCCESS,
-        });
-  
-        dispatch({
-          type: _MESSAGE,
-          payload: response.data.message,
-        });
-  
-        return Promise.resolve();
-      },
-      (error) => {
-        const message =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-  
-        dispatch({
-          type: REGISTER_FAIL,
-        });
-  
-        dispatch({
-          type: _MESSAGE,
-          payload: message,
-        });
-  
-        return Promise.reject();
-      }
-    );
-  };
-  
-  export const login = (username, password) => (dispatch) => {
-    return Service.login(username, password).then(
-      (data) => {
-        dispatch({
-          type: LOGIN_SUCCESS,
-          payload: { user: data },
-        });
-  
-        return Promise.resolve();
-      },
-      (error) => {
-        const message =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-  
-        dispatch({
-          type: LOGIN_FAIL,
-        });
-  
-        dispatch({
-          type: _MESSAGE,
-          payload: message,
-        });
-  
-        return Promise.reject();
-      }
-    );
-  };
-  
-  export const logout = () => (dispatch) => {
-    Service.logout();
-  
-    dispatch({
-      type: LOGOUT,
-    });
-  };
+import AuthService from "../services/auth_service";
+
+export const register = (username, email, password) => (dispatch) => {
+  return AuthService.register(username, email, password).then(
+    (response) => {
+      dispatch({
+        type: REGISTER_SUCCESS,
+      });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: response.data.message,
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      dispatch({
+        type: REGISTER_FAIL,
+      });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: message,
+      });
+
+      return Promise.reject();
+    }
+  );
+};
+
+export const login = (username, password) => (dispatch) => {
+  return AuthService.login(username, password).then(
+    (data) => {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: { user: data },
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: message,
+      });
+
+      return Promise.reject();
+    }
+  );
+};
+
+
+export const searchOne = (offset, size) => (dispatch) => {
+  return AuthService.login(offset, size).then(
+    (data) => {
+      dispatch({
+        payload: { user: data },
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      return Promise.reject();
+    }
+  );
+};
+
+export const logout = () => (dispatch) => {
+  AuthService.logout();
+
+  dispatch({
+    type: LOGOUT,
+  });
+};
