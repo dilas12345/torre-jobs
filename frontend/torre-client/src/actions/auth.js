@@ -77,29 +77,6 @@ export const login = (username, password) => (dispatch) => {
   );
 };
 
-
-export const searchOne = (offset, size) => (dispatch) => {
-  return AuthService.login(offset, size).then(
-    (data) => {
-      dispatch({
-        payload: { user: data },
-      });
-
-      return Promise.resolve();
-    },
-    (error) => {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-
-      return Promise.reject();
-    }
-  );
-};
-
 export const logout = () => (dispatch) => {
   AuthService.logout();
 
