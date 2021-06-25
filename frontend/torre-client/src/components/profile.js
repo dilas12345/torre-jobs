@@ -2,107 +2,116 @@ import React, { Component } from "react";
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import Service from "../services/user_service";
-import {searchOne} from "../actions/auth";
-import search_service from "../services/search_service";
 
-const Suggestions = (props) => {
-  const options = props.results.map(r => (
-    <li key={r.id}>
-      {r.name}
-    </li>
-  ))
-  return <ul>{options}</ul>
-}
 class Profile extends Component {
   constructor(props){
     super(props);
 
     this.state = {
-        opportunities: [],
-        contents: [],
-
-        offset: '',
-        results: []
+      opportunities: [],
+      contents: [],
     }
+
+    this.getBiosJobs = this.getBiosJobs.bind(this);
+
     console.log("State logs", this.state.contents)
   }
 
-  getInfo = () => {
-    // search_service.searchOne()
-    //   .then(({ data }) => {
-    //     this.setState({
-    //       results: data.data                             
-    //     })
-    //   })
-    const { dispatch, data } = this.props;
-
-    dispatch(search_service(this.state.offset, this.state.size))
-      .then(() => {
-        this.setState({
-          results: data.data
-        });
-      })
-      .catch(() => {
-        this.setState({
-          loading: false
-        });
-      });
-
-      console.log("Search content", search_service)
-  }
-
-  handleInputChange = () => {
-    this.setState({
-      offset: this.search.value
-    }, () => {
-      if (this.state.offset && this.state.offset.length > 1) {
-        if (this.state.offset.length % 2 === 0) {
-          this.getInfo()
-
-          console.log("Search result", this.getInfo())
+  async getBiosJobs() {
+    Service.getBiosDashboard().then(
+        response => {
+            this.setState({
+                contents: response.data
+            });
+            // alert(this.state.contents)
+            console.log("contents-->", this.state.contents);
+        },
+        error => {
+            this.setState({
+                contents: (
+                    error.response &&
+                    error.response.data && 
+                    error.response.data.message
+                ) || error.message || error.toString()
+            });
         }
-      } else if (!this.state.offset) {
-        
-      }
-    })
-  }
-  
-  getBiosJobs() {
-    Service.getBiosDashboard()
-      .then(res=>{
-          console.log('Response from main API: ',res)
-          console.log('Home Data: ',res.data)
-          let biosData=res.data;
-          this.setState({Bios:biosData.code,Details:biosData.message})
-
-      })
-      .catch(err=>{
-          console.log(err);
-      })
+    );
   }
 
-  getBiosPeople() {
-    Service.getOppDashboard()
-      .then(res=>{
-          console.log('Response from main API: ',res)
-          console.log('Home Data: ',res.data)
-          let biosData=res.data;
-          this.setState({Bios:biosData.code,Details:biosData.message})
-
-      })
-      .catch(err=>{
-          console.log(err);
-      })
+  async componentDidMount() {
+    const contents = await this.getBiosJobs();
+    this.setState({contents})
   }
+
+  // componentDidMount() {
+  //     Service.getBiosDashboard().then(
+  //         response => {
+  //             this.setState({
+  //                 contents: response.data
+  //             });
+  //             alert(this.state.contents)
+  //             console.log("contents-->", this.state.contents);
+  //         },
+  //         error => {
+  //             this.setState({
+  //                 contents: (
+  //                     error.response &&
+  //                     error.response.data && 
+  //                     error.response.data.message
+  //                 ) || error.message || error.toString()
+  //             });
+  //         }
+  //     );
+  // }
+
+  // opportunities = (e) => {
+  //   e.preventDefault();
+  //   // alert(Jobs.getBiosDashboard());
+  //   Service.getOppDashboard().then(
+  //       response => {
+  //           this.setState({
+  //               data: response.data
+  //           });
+  //           alert(this.state.data.code)
+  //           console.log("contents-->", this.state.data);
+  //       },
+  //       error => {
+  //           this.setState({
+  //               contents: (
+  //                   error.response &&
+  //                   error.response.data && 
+  //                   error.response.data.message
+  //               ) || error.message || error.toString()
+  //           });
+  //       }
+  //   );
+  // }
 
   render() {
     const { user: currentUser } = this.props;
-    // const {conterenderData} = this.state;
-
-    // console.log("Hello", this.getBiosJobs())
+    const {contents} = this.state
+    // console.log("Profile Data-->", this.props)
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
+
+    const JobsBios = ({ code, message }) => (
+
+      <div>
+    
+        {/* <img src={avatar} /> */}
+    
+        <div>
+    
+          <p>{code}</p>
+    
+          <p>{message}</p>
+    
+        </div>
+    
+      </div>
+    
+    );
 
     return (
       <div className="container">
@@ -128,56 +137,39 @@ class Profile extends Component {
         </ul>
 
         <div >
-            <button onClick={this.getBiosJobs} className="btn btn-primary btn-block">
+            <button onClick={this.bios} className="btn btn-primary btn-block">
                 Get Jobs
             </button>
             <p>
                 <strong>Bios Data:</strong> { " " }
-                {/* {this.state.Data} */}
             </p>
-            {/* <ul>
-              hfaldfkahdk
-              {this.getBiosJobs().arrOfNumbers.map((item, i) => {
 
-              return <li key={i}>{item}</li>
+            <div>
+              {this.state.contents.map((content) => (
+              <JobsBios
 
-              })}
-            </ul> */}
+                code={`${content} ${content}`}
 
-            <button onClick={this.getBiosPeople} className="btn btn-primary btn-block">
+                // avatar={user.picture.thumbnail}
+
+                // email={user.email}
+
+                // key={user.id.value}
+
+              />
+
+              ))}
+            </div>
+
+            <button onClick={this.opportunities} className="btn btn-primary btn-block">
                 Get Opportunity
             </button>
             <p>
                 <strong>Opportunity Data:</strong> { " " }
             </p>
-
         </div> 
 
-        <form>
-          <input
-            placeholder="Search for Job..."
-            ref={input => this.search = input}
-            onChange={this.handleInputChange}
-          />
-            {/* <button onClick={this.getInfo} className="btn btn-primary btn-block">
-                Search
-            </button> */}
-          {/* <p>{this.state.offset}</p> */}
-          <Suggestions results={this.state.results} />
-        </form>
-
-        <form>
-          <input
-            placeholder="Search for People..."
-            ref={input => this.search = input}
-            onChange={this.handleInputChange}
-          />
-          {/* <p>{this.state.offset}</p> */}
-          <Suggestions results={this.state.results} />
-        </form>
       </div>
-      
-      
     );
   }
 }
