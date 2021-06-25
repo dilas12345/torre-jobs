@@ -1,39 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = "https://torre-backend-test.herokuapp.com/api/auth/" //"http://localhost:8080/api/auth/";
+const API_URL = "http://localhost:8080/api/auth/";
 
-class Authentication {
-    login(username, password) {
-        return axios
-            .post(BASE_URL + "login", {
-                username,
-                password
-            })
-             .then(response => {
-                 if (response.data.accesstoken) {
-                     localStorage.setItem("user", JSON.stringify(response.data));
-                 }
+class AuthService {
+  login(username, password) {
+    return axios
+      .post(API_URL + "login", { username, password })
+      .then((response) => {
+        if (response.data.accessToken) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+        }
 
-                 console.log("Response-->", response.data)
-                 return response.data;
-             });
-    };
+        return response.data;
+      });
+  }
 
-    logout() {
-        localStorage.removeItem("user");
-    };
+  logout() {
+    localStorage.removeItem("user");
+  }
 
-    register(username, email, password) {
-        return axios.post(BASE_URL + "register", {
-            username,
-            email,
-            password
-        });
-    };
-
-    getRecentUser() {
-        return JSON.parse(localStorage.getItem("user"));
-    };
+  register(username, email, password) {
+    return axios.post(API_URL + "register", {
+      username,
+      email,
+      password,
+    });
+  }
 }
 
-export default new Authentication();
+export default new AuthService();

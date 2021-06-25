@@ -1,92 +1,100 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Router, Switch, Route, Link } from "react-router-dom";
-
+import React, { Component } from 'react';
+import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
+import {Router, Switch, Route, Link } from 'react-router-dom';
 
+import {connect} from "react-redux";
+
+// import Service from "./services/auth_service";
+import Home from './components/home';
 import Login from "./components/login";
 import Register from "./components/register";
-import Home from "./components/home";
 import Profile from "./components/profile";
 import UserDashboard from "./components/user";
 import HrDashboard from "./components/human_resources";
-import AdminDashboard from "./components/admin";
+import AdminDashboard from  './components/admin';
 
-import { logout } from "./actions/auth";
-import { clearMessage } from "./actions/message";
+import { clearMessage } from './actions/message';
 
-import { history } from './helpers/history';
-
+import {history} from './helpers/history';
+import {logout} from "./actions/auth";
 class App extends Component {
-  constructor(props) {
+
+  constructor(props){
     super(props);
-    this.logOut = this.logOut.bind(this);
+    
+    this.logout = this.logout.bind(this);
 
     this.state = {
-      humandResource: false,
-      adminBoard: false,
+      hRDashboard: false,
+      adminDashboard: false,
       currentUser: undefined,
     };
 
+    console.log("ALl props", this.props)
+    console.log("currentUser-->2.", this.state.currentUser);
+
     history.listen((location) => {
-      props.dispatch(clearMessage()); // clear message when changing location
-    });
+      props.dispatch(clearMessage());
+    })
   }
 
   componentDidMount() {
     const user = this.props.user;
-
+    console.log("User-->", user)
     if (user) {
       this.setState({
         currentUser: user,
-        humandResource: user.roles.includes("ROLE_MODERATOR"),
-        adminBoard: user.roles.includes("ROLE_ADMIN"),
+        hRDashboard: user.roles.includes("ROLE_HR"),
+        adminDashboard: user.roles.includes("ROLE_ADMIN"),
       });
     }
   }
 
-  logOut() {
+
+  logout(){
+    // Service.logout();
     this.props.dispatch(logout());
   }
 
-  render() {
-    const { currentUser, humandResource, adminBoard } = this.state;
+  render(){
+    const { currentUser, hRDashboard, adminDashboard} = this.state;
 
-    return (
+    return(
       <Router history={history}>
         <div>
           <nav className="navbar navbar-expand navbar-dark bg-dark">
-            <Link to={"/"} className="navbar-brand">
+            <Link to = {"/"} className="navbar-brand" >
               Torre Jobs
             </Link>
+
             <div className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to={"/home"} className="nav-link">
+                <Link to={"/home"}>
                   Home
                 </Link>
               </li>
 
-              {humandResource && (
+              {hRDashboard && (
                 <li className="nav-item">
-                  <Link to={"/mod"} className="nav-link">
-                    Moderator Board
+                  <Link to={"/hr"} className="nav-link">
+                    HR Dashboard
                   </Link>
                 </li>
               )}
 
-              {adminBoard && (
+              {adminDashboard && (
                 <li className="nav-item">
-                  <Link to={"/admin"} className="nav-link">
-                    Admin Board
+                  <Link to={"/adminDashboard"} className="nav-link">
+                    Admin Dashboard
                   </Link>
                 </li>
               )}
 
               {currentUser && (
                 <li className="nav-item">
-                  <Link to={"/user"} className="nav-link">
-                    User
+                  <Link to={"/userDashboard"} className="nav-link">
+                    User Dashboard
                   </Link>
                 </li>
               )}
@@ -95,14 +103,15 @@ class App extends Component {
             {currentUser ? (
               <div className="navbar-nav ml-auto">
                 <li className="nav-item">
-                  <Link to={"/profile"} className="nav-link">
-                    {currentUser.username}
+                  <Link to={"/profile"} className="nav-links">
+                  {currentUser.username}
                   </Link>
                 </li>
+
                 <li className="nav-item">
-                  <a href="/login" className="nav-link" onClick={this.logOut}>
+                  <Link to={"/login"} className="nav-link">
                     LogOut
-                  </a>
+                  </Link>
                 </li>
               </div>
             ) : (
@@ -115,33 +124,33 @@ class App extends Component {
 
                 <li className="nav-item">
                   <Link to={"/register"} className="nav-link">
-                    Sign Up
+                    Register
                   </Link>
                 </li>
               </div>
-            )}
+            )} 
           </nav>
-
           <div className="container mt-3">
             <Switch>
-              <Route exact path={["/", "/home"]} component={Home} />
+              <Route exact path={["/", "/home"]} component={Home}/>
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/profile" component={Profile} />
-              <Route path="/user" component={UserDashboard} />
-              <Route path="/mod" component={HrDashboard} />
-              <Route path="/admin" component={AdminDashboard} />
+              <Route exact path="/userDashboard" component={UserDashboard} />
+              <Route exact path="/hr" component={HrDashboard} />
+              <Route exact path="/adminDashboard" component={AdminDashboard} />
             </Switch>
           </div>
         </div>
       </Router>
-    );
+      
+    )
   }
 }
 
 function mapStateToProps(state) {
-  const { user } = state.auth;
-  return {
+  const {user} = state.auth;
+  return{
     user,
   };
 }

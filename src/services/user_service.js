@@ -1,24 +1,33 @@
-import axios from 'axios';
-import header from './header';
+import axios from "axios";
+import authHeader from "./header";
 
-const BASE_URL = "https://torre-backend-test.herokuapp.com/api/v1/" //"http://localhost:8080/api/v1/";
+const BASE_URL = "http://localhost:8080/api/v1/";
 
-class user_server {
-    getPublicContent() {
-        return axios.get(BASE_URL + "all");
-    }
+class UserService {
+  getPublicContent() {
+    return axios.get(BASE_URL + "all");
+  }
 
-    getUserDashboard() {
-        return axios.get(BASE_URL + "user", {headers: header() });
-    }
+  getUserBoard() {
+    return axios.get(BASE_URL + "user", { headers: authHeader() });
+  }
 
-    getHrDashboard() {
-        return axios.get(BASE_URL + "hr", {headers: header()});
-    }
+  getModeratorBoard() {
+    return axios.get(BASE_URL + "mod", { headers: authHeader() });
+  }
 
-    getAdminDashaboard() {
-        return axios.get(BASE_URL + "admin", {headers: header( )});
-    }
+  getAdminBoard() {
+    return axios.get(BASE_URL + "admin", { headers: authHeader() });
+  }
+
+  getBiosDashboard() {
+    return axios.get(BASE_URL + "bios", {headers: authHeader() });
+  }
+
+  getOppDashboard() {
+      return axios.get(BASE_URL + "opportunities", {headers: authHeader() });
+  }
+
 }
 
-export default new user_server();
+export default new UserService();
